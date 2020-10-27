@@ -5,28 +5,26 @@ import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
-import Button from 'react-bootstrap/Button';
 import Flyer from './Flyer';
 import Top from './Top';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
+import config from './config.json';
 
-function App() {
-
-  const ITEMS_PER_PAGE = 8;
+const App = () => {
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
 
-  const handleTop = (flag) => {
-    setShow(flag)
-  }
-
 	const [listItems, setListItems] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
-	const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
+  
+  const handleTop = (flag) => {
+    setShow(flag)
+  }
 
 	const handleScroll = () => {
     if (isFetched) return;
@@ -39,19 +37,22 @@ function App() {
 	};
 
   const fetchData = async () => {
-    const result = await axios.get(`http://127.0.0.1:3000/flyers?page=${page}&limit=` + ITEMS_PER_PAGE); //ToDo: move url to config
-    setIsFetching(false);
-    let data = [];
-    if (result && result.data && result.data.data && result.data.data.length) { // ToDo: handle errors
-      data = result.data.data;
-      console.log('PAGE', page, 'DATA', data)
-    
-      setPage(page + 1);
-      setListItems(() => {
-        return [...listItems, ...data];
-      });
-    } else {
-      setIsFetched(true)
+    try {
+      const result = await axios.get(config.SERVER_URL + `?page=${page}&limit=` + config.LAYOUT.ITEMS_PER_PAGE);
+      setIsFetching(false);
+      let data = [];
+      if (result && result.data && result.data.data && result.data.data.length) {
+        data = result.data.data;
+        setPage(page + 1);
+        setListItems(() => {
+          return [...listItems, ...data];
+        });
+      } else {
+        setIsFetched(true);
+        setIsFetching(false);
+      }
+    } catch (err) {
+      console.log('Error: ' + err)
     }
   };
 
@@ -70,45 +71,42 @@ function App() {
   const getStoredHearts = () => {
     let index = {};
     const keys = Object.keys(localStorage)
-    // console.log('keys', keys);
     for (const ind in keys) {
       const key = keys[ind];
-      if (key.indexOf('favorite:flyer:') !== -1) {
+      if (key.indexOf(config.STORAGE.FLYER_KEY_PREFIX) !== -1) {
         const id = key.split(':')[2]
         index[id] = JSON.parse(localStorage.getItem(key)); 
       }
     }
-    //console.log('INDEX', index);
     return index;
   }; 
 
   const [heartIndex, setHeartIndex] = useState(getStoredHearts());
   const handleHeart = (flyer, isFavorite) => {
-    console.log('flyer', flyer, 'isFavorite', isFavorite);
     var arr = heartIndex;
     if (isFavorite) {
       arr[flyer.id] = flyer
-      localStorage.setItem('favorite:flyer:' + flyer.id, JSON.stringify(flyer));
+      localStorage.setItem(config.STORAGE.FLYER_KEY_PREFIX + flyer.id, JSON.stringify(flyer));
     } else {
       if (arr.hasOwnProperty(flyer.id)) {
         delete arr[flyer.id];
-        localStorage.removeItem('favorite:flyer:' + flyer.id);
+        localStorage.removeItem(config.STORAGE.FLYER_KEY_PREFIX + flyer.id);
       }
     } 
     setHeartIndex(arr);
   }
   
-  const numrows = Math.round(listItems.length / 4);
-  const numcols = 4;
+  const numrows = Math.round(listItems.length / config.LAYOUT.COLS_PER_ROW);
+  const numcols = config.LAYOUT.COLS_PER_ROW;
   let item;
   let rows = [];
   for (var r = 0; r < numrows; r++) {
     let cols = [];
     for (var c = 0; c < numcols; c++) {
-      if (r*4 + c >= listItems.length) {
+      if (r*config.LAYOUT.COLS_PER_ROW + c >= listItems.length) {
         break;
       }
-      item = listItems[r*4 + c]
+      item = listItems[r*config.LAYOUT.COLS_PER_ROW + c]
       if (item.retailer) {
         cols.push(
           <Col xs={6} sm={3} key={c}>
