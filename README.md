@@ -2,6 +2,10 @@
 
 React code example
 
+# Requirements
+
+npm or yarn installed
+
 User can:
 * visualize all available flyers scrolling from top to bottom,
 * put his favorite flyers to favorites,
