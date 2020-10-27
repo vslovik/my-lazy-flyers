@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import { AiFillHeart } from 'react-icons/ai';
 import { AiOutlineHeart } from 'react-icons/ai';
 
-
 const Heart = (props) => {
 
     const [active, setActive] = useState(props.active);
@@ -22,7 +21,7 @@ const Heart = (props) => {
     };
   
     return (
-      <span>    
+      <span className="heart">    
         {active ? <AiFillHeart onClick={handleDislike} /> : <AiOutlineHeart onClick={handleLike} />}                                                                                                         
       </span>
     );

@@ -9,7 +9,7 @@ const Flyer = (props) => {
             <Card.Body>
                 <Card.Text>{props.flyer.retailer.toUpperCase()}</Card.Text>
                 <Card.Title>
-                    {props.flyer.title} {props.flyer.id}
+                    {props.flyer.title}
                 </Card.Title>
                 <Card.Subtitle>{props.flyer.category}</Card.Subtitle>
                 <Heart active={props.isFavorite} flyer={props.flyer} handleHeart={props.handleHeart} />

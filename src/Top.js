@@ -31,8 +31,8 @@ const Top = (props) => {
         <Modal.Body>
           <ListGroup>
           {props.items.map((item) => (
-            <ListGroup.Item key={item.id} bsPrefix="top-list-group-item" /* bsPrefix="top-list-group-item top-dark" active="true" variant="dark"*/>
-              <Heart active={true} handleHeart={props.handleHeart} flyer={item} /> {item.title} {item.id}
+            <ListGroup.Item key={item.id} bsPrefix="top-list-group-item">
+              <Heart active={true} handleHeart={props.handleHeart} flyer={item} /> {item.title}
             </ListGroup.Item>
           ))}  
           </ListGroup>

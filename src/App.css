@@ -41,3 +41,7 @@
 .top-dark {
     background-color: #c6c8ca;
 }
+
+.heart {
+    cursor: pointer;
+}

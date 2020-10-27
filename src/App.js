@@ -52,22 +52,21 @@ const App = () => {
         setIsFetching(false);
       }
     } catch (err) {
-      console.log('Error: ' + err)
+      console.log(err)
     }
   };
 
 	useEffect(() => {
 		fetchData();
 		window.addEventListener('scroll', handleScroll);
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
       if (isFetched) return;
       if (!isFetching) return;
       fetchData();
-	}, [isFetching, isFetched]);
-
-
+  }, [isFetching, isFetched]); // eslint-disable-line react-hooks/exhaustive-deps
+  
   const getStoredHearts = () => {
     let index = {};
     const keys = Object.keys(localStorage)
@@ -95,7 +94,7 @@ const App = () => {
     } 
     setHeartIndex(arr);
   }
-  
+
   const numrows = Math.round(listItems.length / config.LAYOUT.COLS_PER_ROW);
   const numcols = config.LAYOUT.COLS_PER_ROW;
   let item;

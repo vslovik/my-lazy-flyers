@@ -1,0 +1,10 @@
+{
+    "SERVER_URL": "http://127.0.0.1:3000/flyers",
+    "LAYOUT": {
+      "ITEMS_PER_PAGE": 16,
+      "COLS_PER_ROW": 4
+    },
+    "STORAGE": {
+        "FLYER_KEY_PREFIX": "favorite:flyer:"
+    }
+}
