@@ -10,6 +10,8 @@ User can:
 Not implemented: as not a part of the specs favorite flyers are 
 not syncronized with flyers updated on the server.
 
+Layout for iPad and iPhone 8.
+
 ### To install app
 
 $ npm install
