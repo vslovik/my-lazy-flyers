@@ -7,12 +7,12 @@ const Flyer = (props) => {
         <Card>
             <Card.Img variant="top" src="./grey_md.jpg" />
             <Card.Body>
-                <Card.Text>{props.retailer.toUpperCase()}</Card.Text>
+                <Card.Text>{props.flyer.retailer.toUpperCase()}</Card.Text>
                 <Card.Title>
-                    {props.title}
+                    {props.flyer.title} {props.flyer.id}
                 </Card.Title>
-                <Card.Subtitle>{props.category}</Card.Subtitle>
-                <Heart />
+                <Card.Subtitle>{props.flyer.category}</Card.Subtitle>
+                <Heart active={props.isFavorite} flyer={props.flyer} handleHeart={props.handleHeart} />
             </Card.Body>
         </Card>      
     )

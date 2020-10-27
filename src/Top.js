@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Figure from 'react-bootstrap/Figure';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { AiFillHeart } from 'react-icons/ai';
+import Heart from './Heart';
 
 const Top = (props) => {
 
@@ -30,11 +30,11 @@ const Top = (props) => {
         </Card> 
         <Modal.Body>
           <ListGroup>
-            <ListGroup.Item bsPrefix="top-list-group-item top-dark" active="true" variant="dark"><AiFillHeart /> Flyer Title</ListGroup.Item>
-            <ListGroup.Item bsPrefix="top-list-group-item"><AiFillHeart /> Flyer Title</ListGroup.Item>
-            <ListGroup.Item bsPrefix="top-list-group-item"><AiFillHeart /> Flyer Title</ListGroup.Item>
-            <ListGroup.Item bsPrefix="top-list-group-item"><AiFillHeart /> Flyer Title</ListGroup.Item>
-            <ListGroup.Item bsPrefix="top-list-group-item"><AiFillHeart /> Flyer Title</ListGroup.Item>
+          {props.items.map((item) => (
+            <ListGroup.Item key={item.id} bsPrefix="top-list-group-item" /* bsPrefix="top-list-group-item top-dark" active="true" variant="dark"*/>
+              <Heart active={true} handleHeart={props.handleHeart} flyer={item} /> {item.title} {item.id}
+            </ListGroup.Item>
+          ))}  
           </ListGroup>
         </Modal.Body>
         <Modal.Footer bsPrefix="top-modal-footer"></Modal.Footer>
