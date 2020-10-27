@@ -4,12 +4,17 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
 import Flyer from './Flyer';
 import Top from './Top';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import axios from 'axios';
+import { Modal } from 'react-bootstrap';
 
 function App() {
+
+  const ITEMS_PER_PAGE = 8;
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -19,30 +24,35 @@ function App() {
   }
 
 	const [listItems, setListItems] = useState([]);
-	const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
 	const [page, setPage] = useState(1);
 
 	const handleScroll = () => {
+    if (isFetched) return;
 		if (
 			Math.ceil(window.innerHeight + document.documentElement.scrollTop) !== document.documentElement.offsetHeight ||
 			isFetching
 		)
 			return;
 		setIsFetching(true);
-		console.log(isFetching);
 	};
 
   const fetchData = async () => {
-    const result = await axios.get(`http://127.0.0.1:3000/flyers?page=${page}&limit=8`); //ToDo: move url to config
+    const result = await axios.get(`http://127.0.0.1:3000/flyers?page=${page}&limit=` + ITEMS_PER_PAGE); //ToDo: move url to config
+    setIsFetching(false);
     let data = [];
     if (result && result.data && result.data.data && result.data.data.length) { // ToDo: handle errors
-      data = JSON.parse(result.data.data);
+      data = result.data.data;
+      console.log('PAGE', page, 'DATA', data)
+    
+      setPage(page + 1);
+      setListItems(() => {
+        return [...listItems, ...data];
+      });
+    } else {
+      setIsFetched(true)
     }
-    console.log('LENGTH', data.length, data[0]) // ToDo: check it
-    setPage(page + 1);
-    setListItems(() => {
-      return [...listItems, ...data];
-    });
   };
 
 	useEffect(() => {
@@ -51,10 +61,10 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+      if (isFetched) return;
       if (!isFetching) return;
       fetchData();
-      setIsFetching(false);
-	}, [isFetching]);
+	}, [isFetching, isFetched]);
 
 
   const getStoredHearts = () => {
@@ -95,10 +105,10 @@ function App() {
   for (var r = 0; r < numrows; r++) {
     let cols = [];
     for (var c = 0; c < numcols; c++) {
-      item = listItems[r*4 + c]
-      if (item.id == 45) {
-        console.log('45', item.id, heartIndex.hasOwnProperty(item.id));
+      if (r*4 + c >= listItems.length) {
+        break;
       }
+      item = listItems[r*4 + c]
       if (item.retailer) {
         cols.push(
           <Col xs={6} sm={3} key={c}>
@@ -128,7 +138,19 @@ function App() {
         handleHeart={handleHeart}
         items={Object.values(heartIndex)}
       />
-      {isFetching && <h1>Fetching more flyers...</h1>}
+      
+      <Modal show={isFetching}>
+        <Modal.Body>
+            <Spinner
+              as="span"
+              animation="grow"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            &nbsp;Fetching more flyers...
+        </Modal.Body>
+      </Modal>
     </Container>
   )
 }
